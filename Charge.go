@@ -6,6 +6,20 @@ import "fmt"
 
 type Charge struct {
 	Propellant []Propellant
+	Projectile *Projectile
+}
+
+func (c *Charge) HeatCapacity() (out float64) {
+	var s1, s2 float64
+	for _, p := range c.Propellant {
+		s1 += p.Force * p.Z * p.Mass * p.AdiabaticIndex / (p.AdiabaticIndex - 1) / p.BurnTemperature
+		s2 += p.Mass * p.Z
+	}
+	return s1 / s2
+}
+
+func (c *Charge) KineticEnergy() float64 {
+	return c.Mass() * c.Projectile.Velocity * c.Projectile.Velocity / 6
 }
 
 func (c *Charge) Reset() {
@@ -17,6 +31,13 @@ func (c *Charge) Reset() {
 			p.Z = 0
 		}
 	}
+}
+
+func (c *Charge) Mass() (out float64) {
+	for _, p := range c.Propellant {
+		out += p.Mass
+	}
+	return out
 }
 
 func (c *Charge) Volume() (out float64) {
