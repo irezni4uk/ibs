@@ -8,6 +8,7 @@ type Propellant struct {
 	Mass            float64
 	Density         float64
 	Force           float64
+	Impulse         float64
 	BurnTemperature float64
 	AdiabaticIndex  float64
 	Covolume        float64
@@ -30,8 +31,9 @@ func NewPropellant() Propellant {
 
 	out.Mass = 1
 	out.Density = 1600
-	out.Force = 1e6
-	out.BurnTemperature = 3000
+	out.Force = 1.015e6
+	out.Impulse = 1.04e6
+	out.BurnTemperature = 2940
 	out.AdiabaticIndex = 1.224
 	out.Covolume = 1e-3
 	out.Z = 0

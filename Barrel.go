@@ -14,7 +14,7 @@ package ibs
 
 import "math"
 
-//import "ibs"
+// import "fmt"
 
 type Barrel struct {
 	DG          float64
@@ -27,24 +27,40 @@ type Barrel struct {
 	Density     float64 //= 7860    % kg/m3
 	Cp          float64 //= 460     % Heat capacity J/kg-K
 	Q           float64
-	Projectile  *Projectile
+	Sp          *SimParams
+
+	boreArea       float64
+	caliber        float64
+	frictionFactor float64
 }
 
-func (b *Barrel) Area() float64 {
-	return 2*b.BoreArea() + math.Pi*b.Caliber()*b.Volume/b.BoreArea()
+func (b *Barrel) State(s *State) {
+	s.Pbase = b.PressureGradient(s.Pmean, b.Sp.ProjMass, b.Sp.ChargeMass)
 }
 
-func (b *Barrel) Temperature_() float64 {
-	return b.Temperature + (b.Q+0*0)/(b.Cp*b.Density*b.Area()*b.Thickness)
+func (b *Barrel) PressureGradient(Pmean, ProjMass, ChargeMass float64) float64 {
+	return Pmean / (1 + ProjMass/3/ChargeMass)
 }
 
-func (b *Barrel) Heat(Tgas, HeatFlux float64) {
-	h := b.FrictionFactor()*HeatFlux + h0 //heat transfer coefficient
-	b.Q += b.Area() * h * (Tgas - b.Temperature_()) * dt
+func (b *Barrel) Area(path float64) float64 {
+	return 2*b.boreArea + math.Pi*b.caliber*(b.Volume/b.boreArea+path)
+}
+
+func (b *Barrel) Temperature_(path float64) float64 {
+	return b.Temperature + (b.Q+0*0)/(b.Cp*b.Density*b.Area(path)*b.Thickness)
+}
+
+func (b *Barrel) Heat(Tgas, Vproj, Cp, GasMass, GasVol, path float64) {
+	HeatFlux := 1. / 2 * Vproj * Cp * GasMass / GasVol
+	h := b.frictionFactor*HeatFlux + h0 //heat transfer coefficient
+	b.Q += b.Area(path) * h * (Tgas - b.Temperature_(path)) * dt
 }
 
 func (b *Barrel) Reset() {
 	b.Q = 0
+	b.caliber = b.Caliber()
+	b.boreArea = b.BoreArea()
+	b.frictionFactor = b.FrictionFactor()
 }
 
 func (b *Barrel) FrictionFactor() float64 { //heat transfer friction factor

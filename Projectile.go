@@ -10,6 +10,12 @@ type Projectile struct {
 	AftLen   float64
 	Velocity float64
 	Path     float64
+	// Solution *Solution
+}
+
+func (p *Projectile) State(s *State) {
+	s.Path = p.Path
+	s.Velocity = p.Velocity
 }
 
 func (p *Projectile) KineticEnergy() float64 {

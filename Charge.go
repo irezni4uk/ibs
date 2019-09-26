@@ -6,7 +6,14 @@ import "fmt"
 
 type Charge struct {
 	Propellant []Propellant
-	Projectile *Projectile
+	// Projectile *Projectile
+	// Solution *Solution
+}
+
+func (c *Charge) State(s *State) {
+	s.Tmean, s.Pmean = c.Thermodynamics(s.Volume, s.EnergyLoss)
+	s.HeatCapacity = c.HeatCapacity()
+	s.GasMass = c.GasMass()
 }
 
 func (c *Charge) HeatCapacity() (out float64) {
@@ -18,8 +25,8 @@ func (c *Charge) HeatCapacity() (out float64) {
 	return s1 / s2
 }
 
-func (c *Charge) KineticEnergy() float64 {
-	return c.Mass() * c.Projectile.Velocity * c.Projectile.Velocity / 6
+func (c *Charge) KineticEnergy(Vproj float64) float64 {
+	return c.Mass() * Vproj * Vproj / 6
 }
 
 func (c *Charge) Reset() {
@@ -31,6 +38,13 @@ func (c *Charge) Reset() {
 			p.Z = 0
 		}
 	}
+}
+
+func (c *Charge) GasMass() (out float64) {
+	for _, p := range c.Propellant {
+		out += p.Mass * p.Z
+	}
+	return out
 }
 
 func (c *Charge) Mass() (out float64) {
@@ -67,7 +81,8 @@ func (c *Charge) Burn(Pmean float64) {
 		if p.IsPrimer {
 			continue
 		}
-		z = p.Z + Pmean/1e6*dt
+		// z = p.Z + Pmean/1.04e6*dt
+		z = p.Z + Pmean/p.Impulse*dt
 		if z > 1 {
 			p.Z = 1
 		} else {
@@ -81,7 +96,7 @@ func NewCharge() Charge {
 
 	out := Charge{}
 	// out.Propellant = make([]Propellant, 4)
-	out.Propellant = append(out.Propellant, Propellant{.7e-3, 1700, 260e3, 2427, 1.22, .0006, 1, true})
+	out.Propellant = append(out.Propellant, Propellant{7e-3, 1700, 260e3, .1e6, 2427, 1.22, .0006, 1, true})
 	out.Propellant = append(out.Propellant, NewPropellant())
 	fmt.Println(out.Propellant)
 	return out
