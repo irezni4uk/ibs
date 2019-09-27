@@ -1,0 +1,1 @@
+This code solves interior ballistics problem using thermodynamics approach
