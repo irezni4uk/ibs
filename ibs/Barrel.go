@@ -17,21 +17,17 @@ import "math"
 // import "fmt"
 
 type Barrel struct {
-	DG          float64
-	DL          float64
-	GLR         float64
-	Thickness   float64
-	Temperature float64
-	Length      float64
-	Volume      float64
-	Density     float64 //= 7860    % kg/m3
-	Cp          float64 //= 460     % Heat capacity J/kg-K
-	Q           float64
-	Sp          *SimParams
-
-	boreArea       float64
-	caliber        float64
-	frictionFactor float64
+	Caliber        float64
+	BoreArea       float64
+	FrictionFactor float64
+	Thickness      float64
+	Temperature    float64
+	Length         float64
+	Volume         float64
+	Density        float64 //= 7860    % kg/m3
+	Cp             float64 //= 460     % Heat capacity J/kg-K
+	Q              float64
+	Sp             *SimParams
 }
 
 func (b *Barrel) State(s *State) {
@@ -43,7 +39,7 @@ func (b *Barrel) PressureGradient(Pmean, ProjMass, ChargeMass float64) float64 {
 }
 
 func (b *Barrel) Area(path float64) float64 {
-	return 2*b.boreArea + math.Pi*b.caliber*(b.Volume/b.boreArea+path)
+	return 2*b.BoreArea + math.Pi*b.Caliber*(b.Volume/b.BoreArea+path)
 }
 
 func (b *Barrel) Temperature_(path float64) float64 {
@@ -52,42 +48,38 @@ func (b *Barrel) Temperature_(path float64) float64 {
 
 func (b *Barrel) Heat(Tgas, Vproj, Cp, GasMass, GasVol, path float64) {
 	HeatFlux := 1. / 2 * Vproj * Cp * GasMass / GasVol
-	h := b.frictionFactor*HeatFlux + h0 //heat transfer coefficient
+	h := b.FrictionFactor*HeatFlux + h0 //heat transfer coefficient
 	b.Q += b.Area(path) * h * (Tgas - b.Temperature_(path)) * dt
 }
 
 func (b *Barrel) Reset() {
 	b.Q = 0
-	b.caliber = b.Caliber()
-	b.boreArea = b.BoreArea()
-	b.frictionFactor = b.FrictionFactor()
-}
-
-func (b *Barrel) FrictionFactor() float64 { //heat transfer friction factor
-	return math.Pow(13.2+4*math.Log10(100*b.Caliber()), -2)
-}
-
-func (b *Barrel) Caliber() float64 {
-	return math.Sqrt((b.GLR*math.Pow(b.DG, 2) + math.Pow(b.DL, 2)) / (b.GLR + 1))
-}
-
-func (b *Barrel) BoreArea() float64 {
-	return math.Pow(b.Caliber(), 2) * math.Pi / 4
 }
 
 func NewBarrel() Barrel {
 	out := Barrel{}
 
-	out.DG = 58.8e-3
-	out.DL = 57e-3
-	out.GLR = 0.683                     // pi*d/(n*w) - 1    <- pi*57/(16*(6.8-.3/2)) - 1
+	out.Caliber = Caliber(58.8e-3, 57e-3, 0.683)
+	out.BoreArea = BoreArea(out.Caliber)
+	out.FrictionFactor = FrictionFactor(out.Caliber)
 	out.Thickness = .0045 * 25.4 * 1e-3 // IBHVG2 A USERS GUIDE
 	out.Temperature = 288
 	out.Length = 3.4025
 	out.Volume = 1600e-6
 	out.Density = 7860
 	out.Cp = 460
-	out.Q = 0
 
 	return out
+}
+
+func Caliber(DG, DL, GLR float64) float64 {
+	return math.Sqrt((GLR*math.Pow(DG, 2) + math.Pow(DL, 2)) / (GLR + 1))
+}
+
+func BoreArea(Caliber float64) float64 {
+	return math.Pi * math.Pow(Caliber, 2) / 4
+}
+
+func FrictionFactor(Caliber float64) float64 { //heat transfer friction factor
+	return math.Pow(13.2+4*math.Log10(100*Caliber), -2)
 }

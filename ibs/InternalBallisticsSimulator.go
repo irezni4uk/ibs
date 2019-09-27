@@ -16,19 +16,6 @@ type InternalBallisticsSimulator struct {
 	Params     *SimParams
 }
 
-type State struct {
-	Time         float64
-	Pmean        float64
-	Tmean        float64
-	Velocity     float64
-	Path         float64
-	Pbase        float64
-	HeatCapacity float64
-	GasMass      float64
-	Volume       float64
-	EnergyLoss   float64
-}
-
 type SimParams struct {
 	ProjMass   float64
 	ChargeMass float64
@@ -54,7 +41,8 @@ func (i *InternalBallisticsSimulator) RunSym() float64 {
 		s.Time = t
 		i.State(&s)
 		i.Step(&s)
-		fmt.Println(fmt.Sprintf("%#v", s))
+		fmt.Printf("%+v\n", s)
+		// fmt.Println(fmt.Sprintf("%#v", s))
 		// fmt.Println(i.Projectile.Velocity, i.Charge.HeatCapacity(), i.Charge.GasMass(), i.Volume(), 1/2)
 		// fmt.Println(fmt.Sprintf("t: %.1f ms\tPmean: %.0f MPa\tPbase: %.0f MPa\tTgas: %.0f K\tCp: %.0f J/K\trho: %.1f kg/m3\tV: %.0f m/s\tx: %.3f m", t*1e3, Pmean/1e6, Pbase/1e6, Tgas, i.Charge.HeatCapacity(), i.Charge.GasMass()/i.Volume(), i.Projectile.Velocity, i.Projectile.Path))
 
@@ -91,7 +79,7 @@ func (i *InternalBallisticsSimulator) EnergyLoss() float64 {
 }
 
 func (i *InternalBallisticsSimulator) Volume() float64 {
-	return i.Barrel.Volume - i.Projectile.AftVol - i.Charge.Volume() + i.Projectile.Path*i.Barrel.BoreArea()
+	return i.Barrel.Volume - i.Projectile.AftVol - i.Charge.Volume() + i.Projectile.Path*i.Barrel.BoreArea
 }
 
 func (i *InternalBallisticsSimulator) Reset() {
@@ -101,7 +89,7 @@ func (i *InternalBallisticsSimulator) Reset() {
 }
 
 func (i *InternalBallisticsSimulator) LinkComponents() {
-	i.Params = &SimParams{i.Projectile.Mass, i.Charge.Mass(), i.Barrel.BoreArea()}
+	i.Params = &SimParams{i.Projectile.Mass, i.Charge.Mass(), i.Barrel.BoreArea}
 	i.Barrel.Sp = i.Params
 }
 
