@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"ibs/ibs"
 	// "os"
+	"bytes"
+	"encoding/binary"
+	"io/ioutil"
 	"time"
 )
 
@@ -31,7 +34,13 @@ func main() {
 	fmt.Println("Hello World")
 	t := ibs.Projectile{}
 	fmt.Println("%v", t)
-	t = ibs.Projectile{1, 0, 0, 0, 0}
+	t = ibs.Projectile{
+		Mass:     1,
+		AftVol:   0,
+		AftLen:   0,
+		Velocity: 0,
+		Path:     0,
+	}
 	s := fmt.Sprintf("%#v", t)
 	fmt.Println(s)
 	b := ibs.NewBarrel()
@@ -45,12 +54,20 @@ func main() {
 	i := ibs.InternalBallisticsSimulator{}
 	fmt.Println(i)
 	c := ibs.NewCharge()
-	i = ibs.InternalBallisticsSimulator{&b, &t, &c, nil}
+	i = ibs.InternalBallisticsSimulator{
+		Barrel:     &b,
+		Projectile: &t,
+		Charge:     &c,
+		Params:     &ibs.SimParams{ForcingPressure: 100e6},
+	}
 	i.LinkComponents()
-	// test(i)
-	fmt.Println(i.RunSym())
+	test(i)
+	// fmt.Println(i.RunSym())
 	// fmt.Println(fmt.Sprintf("%#v", c))
 	fmt.Println(fmt.Sprintf("%#v", i))
+
+	sol := i.RunSym()
+	dumpSol(&sol)
 }
 
 func test(obj ibs.InternalBallisticsSimulator) {
@@ -63,4 +80,19 @@ func test(obj ibs.InternalBallisticsSimulator) {
 	elapsed := time.Since(start)
 	fmt.Println(fmt.Sprintf("RunSym took %s", elapsed))
 	// log.Printf("Binomial took %s", elapsed)
+}
+
+func dumpSol(in *[]ibs.State) {
+	var bin_buf bytes.Buffer
+	// x := myStruct{"1", "Hello"}
+	// binary.Write(&bin_buf, binary.BigEndian, in)
+	binary.Write(&bin_buf, binary.LittleEndian, in)
+	err := ioutil.WriteFile("sol.bin", bin_buf.Bytes(), 0644)
+	check(err)
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }

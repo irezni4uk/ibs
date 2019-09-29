@@ -10,7 +10,7 @@ type Projectile struct {
 	AftLen   float64
 	Velocity float64
 	Path     float64
-	// Solution *Solution
+	sp       *SimParams
 }
 
 func (p *Projectile) State(s *State) {
@@ -22,8 +22,11 @@ func (p *Projectile) KineticEnergy() float64 {
 	return p.Mass * p.Velocity * p.Velocity / 2
 }
 
-func (p *Projectile) Accelerate(Force float64) {
-	accel := Force / p.Mass
+func (p *Projectile) Accelerate(Pbase float64) {
+	if p.Path == 0 && Pbase < p.sp.ForcingPressure {
+		return
+	}
+	accel := Pbase * p.sp.BoreArea / p.Mass
 	p.Path += p.Velocity * dt
 	p.Velocity += accel * dt
 }

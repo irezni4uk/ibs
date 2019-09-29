@@ -1,6 +1,6 @@
 package ibs
 
-import "fmt"
+// import "fmt"
 
 const (
 	wallTime = 20e-3
@@ -17,18 +17,20 @@ type InternalBallisticsSimulator struct {
 }
 
 type SimParams struct {
-	ProjMass   float64
-	ChargeMass float64
-	BoreArea   float64
-	// Caliber    float64
+	ProjMass        float64
+	ChargeMass      float64
+	BoreArea        float64
+	ForcingPressure float64
 }
 
-func (i *InternalBallisticsSimulator) RunSym() float64 {
+func (i *InternalBallisticsSimulator) RunSym() []State {
+	// func (i *InternalBallisticsSimulator) RunSym() float64 {
+	var out = make([]State, int(wallTime/dt))
 	i.Reset()
 
-	// n := 0
-	t := 0.
-	for t < wallTime && i.Projectile.Path < i.Barrel.Length {
+	n := 0
+	// t := 0.
+	for t := 0.; t < wallTime && i.Projectile.Path < i.Barrel.Length; n++ {
 		s := State{}
 		s.Time = t
 		i.State(&s)
@@ -36,18 +38,20 @@ func (i *InternalBallisticsSimulator) RunSym() float64 {
 		// fmt.Printf("%+v\n", s)
 
 		t += dt
+		out[n] = s
 	}
 	// fmt.Println(fmt.Sprintf("Eproj: %.0f J, Eprop: %.0f J, Q: %.0f J",
 	// 	i.Projectile.KineticEnergy(),
 	// 	i.Charge.KineticEnergy(i.Projectile.Velocity),
 	// 	i.Barrel.Q))
-	return 42
+	return out[:n]
+	// return 42
 }
 
 func (i *InternalBallisticsSimulator) Step(s *State) {
 	i.Barrel.Heat(s.Tmean, s.Velocity, s.HeatCapacity, s.GasMass, s.Volume, s.Path)
 	i.Charge.Burn(s.Pmean)
-	i.Projectile.Accelerate(s.Pbase * i.Params.BoreArea)
+	i.Projectile.Accelerate(s.Pbase)
 }
 
 func (i *InternalBallisticsSimulator) State(s *State) {
@@ -78,8 +82,9 @@ func (i *InternalBallisticsSimulator) Reset() {
 }
 
 func (i *InternalBallisticsSimulator) LinkComponents() {
-	i.Params = &SimParams{i.Projectile.Mass, i.Charge.Mass(), i.Barrel.BoreArea}
+	i.Params = &SimParams{i.Projectile.Mass, i.Charge.Mass(), i.Barrel.BoreArea, i.Params.ForcingPressure}
 	i.Barrel.Sp = i.Params
+	i.Projectile.sp = i.Params
 }
 
 // func (i *InternalBallisticsSimulator) String() out string {
