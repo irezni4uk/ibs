@@ -68,6 +68,7 @@ func main() {
 
 	sol := i.RunSym()
 	dumpSol(&sol)
+	fmt.Println(sol[len(sol)-1])
 }
 
 func test(obj ibs.InternalBallisticsSimulator) {
