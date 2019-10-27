@@ -1,6 +1,6 @@
 package ibs
 
-import "fmt"
+// import "fmt"
 
 // this is a comment
 
@@ -17,18 +17,19 @@ func (c *Charge) State(s *State) {
 }
 
 func (c *Charge) HeatFlux(Vol, Vproj float64) float64 {
-	return c.HeatCapacity() * c.GasDens(Vol) * c.Velocity(Vproj)
+	// fmt.Println(c.HeatCapacity(), c.GasDens(Vol), c.Velocity(Vproj), Vproj)
+	return c.HeatCapacity() / Vol * c.Velocity(Vproj)
 }
 
 func (c *Charge) HeatCapacity() (out float64) {
 	for _, p := range c.Propellant {
 		out += p.HeatCapacity()
 	}
-	return out / c.GasMass()
+	return out // / c.GasMass()
 }
 
 func (c *Charge) Velocity(Vproj float64) float64 {
-	return 1 / 2 * Vproj
+	return .5 * Vproj
 }
 
 func (c *Charge) KineticEnergy(Vproj float64) float64 {
@@ -47,7 +48,7 @@ func (c *Charge) GasDens(Vol float64) float64 {
 
 func (c *Charge) GasMass() (out float64) {
 	for _, p := range c.Propellant {
-		out += p.Mass * p.Z
+		out += p.GasMass()
 	}
 	return out
 }
@@ -91,6 +92,6 @@ func NewCharge() Charge {
 	// out.Propellant = make([]Propellant, 4)
 	out.Propellant = append(out.Propellant, Propellant{7e-3, 1700, 260e3, .1e6, 2427, 1.22, .0006, 1, true})
 	out.Propellant = append(out.Propellant, NewPropellant())
-	fmt.Println(out.Propellant)
+	// fmt.Println(out.Propellant)
 	return out
 }

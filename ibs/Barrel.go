@@ -46,6 +46,7 @@ func (b *Barrel) Temperature_(path float64) float64 {
 }
 
 func (b *Barrel) Heat(Tgas, HeatFlux, path float64) {
+	// fmt.Println(HeatFlux)
 	h := b.FrictionFactor*HeatFlux + h0 //heat transfer coefficient
 	b.Q += b.Area(path) * h * (Tgas - b.Temperature_(path)) * dt
 }

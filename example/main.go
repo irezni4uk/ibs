@@ -61,7 +61,7 @@ func main() {
 		Params:     &ibs.SimParams{ForcingPressure: 100e6},
 	}
 	i.LinkComponents()
-	test(i)
+	// test(i)
 	// fmt.Println(i.RunSym())
 	// fmt.Println(fmt.Sprintf("%#v", c))
 	fmt.Println(fmt.Sprintf("%#v", i))
