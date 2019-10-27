@@ -68,7 +68,10 @@ func main() {
 
 	sol := i.RunSym()
 	dumpSol(&sol)
+<<<<<<< HEAD
 	// fmt.Println(sol)
+=======
+>>>>>>> master
 	fmt.Println(sol[0])
 	fmt.Println(sol[len(sol)-1])
 }
