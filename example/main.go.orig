@@ -61,13 +61,17 @@ func main() {
 		Params:     &ibs.SimParams{ForcingPressure: 100e6},
 	}
 	i.LinkComponents()
-	test(i)
+	// test(i)
 	// fmt.Println(i.RunSym())
 	// fmt.Println(fmt.Sprintf("%#v", c))
 	fmt.Println(fmt.Sprintf("%#v", i))
 
 	sol := i.RunSym()
 	dumpSol(&sol)
+<<<<<<< HEAD
+	// fmt.Println(sol)
+=======
+>>>>>>> master
 	fmt.Println(sol[0])
 	fmt.Println(sol[len(sol)-1])
 }

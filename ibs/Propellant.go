@@ -26,8 +26,12 @@ func (p *Propellant) GasMass() float64 {
 	return p.Mass * p.Z
 }
 
+func (p *Propellant) FullForce() float64 {
+	return p.Force * p.GasMass()
+}
+
 func (p *Propellant) HeatCapacity() float64 {
-	return p.Force * p.Z * p.Mass * p.AdiabaticIndex / (p.AdiabaticIndex - 1) / p.BurnTemperature
+	return p.FullForce() * p.AdiabaticIndex / (p.AdiabaticIndex - 1) / p.BurnTemperature
 }
 
 func (p *Propellant) Reset() {

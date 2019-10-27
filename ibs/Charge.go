@@ -68,12 +68,12 @@ func (c *Charge) Volume() (out float64) {
 }
 
 func (c *Charge) Thermodynamics(Vol, Enloss float64) (Tmean, Pmean float64) {
-	var s1, s2, s3, out float64
+	var s1, s2, s3 float64
 	for _, p := range c.Propellant {
-		out = p.Force * p.Z * p.Mass / (p.AdiabaticIndex - 1)
-		s1 += out
-		s2 += out / p.BurnTemperature
-		s3 += out * (p.AdiabaticIndex - 1) / p.BurnTemperature
+		f := p.FullForce()
+		s1 += f / (p.AdiabaticIndex - 1)
+		s2 += f / p.BurnTemperature / (p.AdiabaticIndex - 1)
+		s3 += f / p.BurnTemperature
 	}
 	Tmean = (s1 - Enloss) / s2
 	Pmean = Tmean / Vol * s3
