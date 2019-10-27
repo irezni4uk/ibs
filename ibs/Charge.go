@@ -17,14 +17,14 @@ func (c *Charge) State(s *State) {
 }
 
 func (c *Charge) HeatFlux(Vol, Vproj float64) float64 {
-	return c.HeatCapacity() / Vol * c.Velocity(Vproj)
+	return c.HeatCapacity() * c.GasDens(Vol) * c.Velocity(Vproj)
 }
 
 func (c *Charge) HeatCapacity() (out float64) {
 	for _, p := range c.Propellant {
 		out += p.HeatCapacity()
 	}
-	return out
+	return out / c.GasMass()
 }
 
 func (c *Charge) Velocity(Vproj float64) float64 {
