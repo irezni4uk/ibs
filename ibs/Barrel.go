@@ -9,7 +9,6 @@ package ibs
    %   Thickness   :wall thickness, m
    %   Temperature :wall temp, K
 
-   %   Copyright 2019 Reznichuk I.
 */
 
 import "math"
@@ -46,8 +45,7 @@ func (b *Barrel) Temperature_(path float64) float64 {
 	return b.Temperature + (b.Q+0*0)/(b.Cp*b.Density*b.Area(path)*b.Thickness)
 }
 
-func (b *Barrel) Heat(Tgas, Vproj, Cp, GasMass, GasVol, path float64) {
-	HeatFlux := 1. / 2 * Vproj * Cp * GasMass / GasVol
+func (b *Barrel) Heat(Tgas, HeatFlux, path float64) {
 	h := b.FrictionFactor*HeatFlux + h0 //heat transfer coefficient
 	b.Q += b.Area(path) * h * (Tgas - b.Temperature_(path)) * dt
 }

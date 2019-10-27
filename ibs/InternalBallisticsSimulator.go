@@ -27,6 +27,7 @@ func (i *InternalBallisticsSimulator) RunSym() []State {
 	// func (i *InternalBallisticsSimulator) RunSym() float64 {
 	var out = make([]State, int(wallTime/dt))
 	i.Reset()
+	// fmt.Println(i.Charge)
 
 	n := 0
 	// t := 0.
@@ -49,7 +50,7 @@ func (i *InternalBallisticsSimulator) RunSym() []State {
 }
 
 func (i *InternalBallisticsSimulator) Step(s *State) {
-	i.Barrel.Heat(s.Tmean, s.Velocity, s.HeatCapacity, s.GasMass, s.Volume, s.Path)
+	i.Barrel.Heat(s.Tmean, i.Charge.HeatFlux(s.Volume, s.Velocity), s.Path)
 	i.Charge.Burn(s.Pmean)
 	i.Projectile.Accelerate(s.Pbase)
 }

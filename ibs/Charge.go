@@ -16,13 +16,19 @@ func (c *Charge) State(s *State) {
 	s.GasMass = c.GasMass()
 }
 
+func (c *Charge) HeatFlux(Vol, Vproj float64) float64 {
+	return c.HeatCapacity() / Vol * c.Velocity(Vproj)
+}
+
 func (c *Charge) HeatCapacity() (out float64) {
-	var s1, s2 float64
 	for _, p := range c.Propellant {
-		s1 += p.Force * p.Z * p.Mass * p.AdiabaticIndex / (p.AdiabaticIndex - 1) / p.BurnTemperature
-		s2 += p.Mass * p.Z
+		out += p.HeatCapacity()
 	}
-	return s1 / s2
+	return out
+}
+
+func (c *Charge) Velocity(Vproj float64) float64 {
+	return 1 / 2 * Vproj
 }
 
 func (c *Charge) KineticEnergy(Vproj float64) float64 {
@@ -30,14 +36,13 @@ func (c *Charge) KineticEnergy(Vproj float64) float64 {
 }
 
 func (c *Charge) Reset() {
-	for i, _ := range c.Propellant {
-		p := &c.Propellant[i]
-		if p.IsPrimer {
-			p.Z = 1
-		} else {
-			p.Z = 0
-		}
+	for i := range c.Propellant {
+		c.Propellant[i].Reset()
 	}
+}
+
+func (c *Charge) GasDens(Vol float64) float64 {
+	return c.GasMass() / Vol
 }
 
 func (c *Charge) GasMass() (out float64) {
@@ -75,20 +80,8 @@ func (c *Charge) Thermodynamics(Vol, Enloss float64) (Tmean, Pmean float64) {
 }
 
 func (c *Charge) Burn(Pmean float64) {
-	var z float64
-	for i, _ := range c.Propellant {
-		p := &c.Propellant[i]
-		if p.IsPrimer {
-			continue
-		}
-		// z = p.Z + Pmean/1.04e6*dt
-		z = p.Z + Pmean/p.Impulse*dt
-		if z > 1 {
-			p.Z = 1
-		} else {
-			p.Z = z
-		}
-		// fmt.Println(z)
+	for i := range c.Propellant {
+		c.Propellant[i].Burn(Pmean)
 	}
 }
 

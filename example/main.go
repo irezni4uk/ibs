@@ -68,10 +68,13 @@ func main() {
 
 	sol := i.RunSym()
 	dumpSol(&sol)
+	// fmt.Println(sol)
+	fmt.Println(sol[len(sol)-1])
 }
 
 func test(obj ibs.InternalBallisticsSimulator) {
 	n := 1000
+	// n := 2
 	start := time.Now()
 	for i := 0; i < n; i++ {
 		obj.RunSym()
