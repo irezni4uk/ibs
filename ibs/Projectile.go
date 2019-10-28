@@ -2,8 +2,6 @@ package ibs
 
 // import "fmt"
 
-// this is a comment
-
 type Projectile struct {
 	Mass     float64
 	AftVol   float64
@@ -23,10 +21,6 @@ func (p *Projectile) KineticEnergy() float64 {
 }
 
 func (p *Projectile) Accelerate(Force float64) {
-	// if p.Path == 0 && Pbase < p.sp.ForcingPressure {
-	// 	return
-	// }
-	// accel := Pbase * p.sp.BoreArea / p.Mass
 	accel := Force / p.Mass
 	p.Path += p.Velocity * dt
 	p.Velocity += accel * dt

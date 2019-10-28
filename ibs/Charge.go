@@ -90,7 +90,7 @@ func NewCharge() Charge {
 
 	out := Charge{}
 	// out.Propellant = make([]Propellant, 4)
-	out.Propellant = append(out.Propellant, Propellant{7e-3, 1700, 260e3, .1e6, 2427, 1.22, .0006, 1, true})
+	out.Propellant = append(out.Propellant, Propellant{7e-3, 1700, 260e3, .1e6, 2427, 1.22, .0006, 1, true, PsiFun(1, 1, 0, 0, 0)})
 	out.Propellant = append(out.Propellant, NewPropellant())
 	// fmt.Println(out.Propellant)
 	return out

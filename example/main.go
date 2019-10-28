@@ -30,7 +30,10 @@ func main() {
 	// 	fmt.Println(err)
 	// 	return
 	// }
-
+	// f1 := ibs.PsiFun(1, 1, 0, 0, 0)
+	// fmt.Println(f1(100), f1(.5), f1(0), f1(.99), f1(-1))
+	// f1 = ibs.PsiFun(1.607, .769, .101, .506, -.823)
+	// fmt.Println(f1(100), f1(.5), f1(0), f1(.99), f1(-1), f1(1), f1(1.7), f1(1.607))
 	fmt.Println("Hello World")
 	t := ibs.Projectile{}
 	fmt.Println("%v", t)
@@ -54,6 +57,7 @@ func main() {
 	i := ibs.InternalBallisticsSimulator{}
 	fmt.Println(i)
 	c := ibs.NewCharge()
+	fmt.Println(c)
 	i = ibs.InternalBallisticsSimulator{
 		Barrel:     &b,
 		Projectile: &t,

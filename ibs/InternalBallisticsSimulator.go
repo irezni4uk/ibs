@@ -53,8 +53,7 @@ func (i *InternalBallisticsSimulator) Step(s *State) {
 	i.Barrel.Heat(s.Tmean, i.Charge.HeatFlux(s.Volume, s.Velocity), s.Path)
 	i.Charge.Burn(s.Pmean)
 	if s.Pbase > i.Params.ForcingPressure || i.Projectile.Path > 0 {
-		f := s.Pbase * i.Params.BoreArea
-		i.Projectile.Accelerate(f)
+		i.Projectile.Accelerate(s.Pbase * i.Params.BoreArea)
 	}
 }
 
