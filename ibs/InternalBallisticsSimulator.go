@@ -52,7 +52,10 @@ func (i *InternalBallisticsSimulator) RunSym() []State {
 func (i *InternalBallisticsSimulator) Step(s *State) {
 	i.Barrel.Heat(s.Tmean, i.Charge.HeatFlux(s.Volume, s.Velocity), s.Path)
 	i.Charge.Burn(s.Pmean)
-	i.Projectile.Accelerate(s.Pbase)
+	if s.Pbase > i.Params.ForcingPressure || i.Projectile.Path > 0 {
+		f := s.Pbase * i.Params.BoreArea
+		i.Projectile.Accelerate(f)
+	}
 }
 
 func (i *InternalBallisticsSimulator) State(s *State) {
@@ -85,7 +88,7 @@ func (i *InternalBallisticsSimulator) Reset() {
 func (i *InternalBallisticsSimulator) LinkComponents() {
 	i.Params = &SimParams{i.Projectile.Mass, i.Charge.Mass(), i.Barrel.BoreArea, i.Params.ForcingPressure}
 	i.Barrel.Sp = i.Params
-	i.Projectile.sp = i.Params
+	// i.Projectile.sp = i.Params
 }
 
 // func (i *InternalBallisticsSimulator) String() out string {

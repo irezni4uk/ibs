@@ -73,7 +73,7 @@ func main() {
 }
 
 func test(obj ibs.InternalBallisticsSimulator) {
-	n := 1000
+	n := 100
 	// n := 2
 	start := time.Now()
 	for i := 0; i < n; i++ {
