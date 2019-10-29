@@ -24,7 +24,6 @@ type SimParams struct {
 }
 
 func (i *InternalBallisticsSimulator) RunSym() []State {
-	// func (i *InternalBallisticsSimulator) RunSym() float64 {
 	var out = make([]State, int(wallTime/dt))
 	i.Reset()
 	// fmt.Println(i.Charge)
@@ -46,11 +45,10 @@ func (i *InternalBallisticsSimulator) RunSym() []State {
 	// 	i.Charge.KineticEnergy(i.Projectile.Velocity),
 	// 	i.Barrel.Q))
 	return out[:n]
-	// return 42
 }
 
 func (i *InternalBallisticsSimulator) Step(s *State) {
-	i.Barrel.Heat(s.Tmean, i.Charge.HeatFlux(s.Volume, s.Velocity), s.Path)
+	// i.Barrel.Heat(s.Tmean, i.Charge.HeatFlux(s.Volume, s.Velocity), s.Path)
 	i.Charge.Burn(s.Pmean)
 	if s.Pbase > i.Params.ForcingPressure || i.Projectile.Path > 0 {
 		i.Projectile.Accelerate(s.Pbase * i.Params.BoreArea)

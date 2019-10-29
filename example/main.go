@@ -67,7 +67,7 @@ func main() {
 	i.LinkComponents()
 	test(i)
 	// fmt.Println(i.RunSym())
-	// fmt.Println(fmt.Sprintf("%#v", c))
+	fmt.Println(fmt.Sprintf("%#v", c))
 	fmt.Println(fmt.Sprintf("%#v", i))
 
 	sol := i.RunSym()

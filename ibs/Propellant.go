@@ -62,9 +62,10 @@ func NewPropellant() Propellant {
 	out.Impulse = 1.04e6
 	out.BurnTemperature = 2940
 	out.AdiabaticIndex = 1.224
-	out.Covolume = 1e-3
+	out.Covolume = 1.009e-3
 	out.Z = 0
 	out.IsPrimer = false
+	// out.IsPrimer = true
 	out.psi = PsiFun(1, 1, 0, 0, 0)
 
 	return out
