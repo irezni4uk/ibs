@@ -1,3 +1,4 @@
+//Package ibs provides functionality for interior ballistics simulations
 package ibs
 
 // import "fmt"
@@ -9,6 +10,7 @@ const (
 	h0 = 11.35 //Free convective heat transfer coefficient, zero speed W/m^2-K
 )
 
+//InternalBallisticsSimulator manages all components of simulation
 type InternalBallisticsSimulator struct {
 	Barrel     *Barrel
 	Projectile *Projectile
@@ -16,6 +18,7 @@ type InternalBallisticsSimulator struct {
 	Params     *SimParams
 }
 
+//SimParams contains common parameters of simulation
 type SimParams struct {
 	ProjMass        float64
 	ChargeMass      float64
@@ -23,6 +26,7 @@ type SimParams struct {
 	ForcingPressure float64
 }
 
+//RunSym performs the simulation of interior ballistics problem
 func (i *InternalBallisticsSimulator) RunSym() []State {
 	var out = make([]State, int(wallTime/dt))
 	i.Reset()
@@ -48,6 +52,7 @@ func (i *InternalBallisticsSimulator) RunSym() []State {
 	return out[:n]
 }
 
+//Step makes one step through simulation time
 func (i *InternalBallisticsSimulator) Step(s *State) {
 	i.Barrel.Heat(s.Tmean, i.Charge.HeatFlux(s.Volume, s.Velocity), s.Path)
 	// trig := true
@@ -61,6 +66,7 @@ func (i *InternalBallisticsSimulator) Step(s *State) {
 	}
 }
 
+//State collects simulation parameters for present step
 func (i *InternalBallisticsSimulator) State(s *State) {
 	s.Volume = i.Volume()
 	s.EnergyLoss = i.EnergyLoss()
@@ -70,6 +76,7 @@ func (i *InternalBallisticsSimulator) State(s *State) {
 
 }
 
+//EnergyLoss calculates energy losses projectile translation, barrel heating, etc.
 func (i *InternalBallisticsSimulator) EnergyLoss() float64 {
 	var out float64
 	out += i.Projectile.KineticEnergy()
@@ -78,16 +85,19 @@ func (i *InternalBallisticsSimulator) EnergyLoss() float64 {
 	return out
 }
 
+//Volume returns current system volume
 func (i *InternalBallisticsSimulator) Volume() float64 {
 	return i.Barrel.Volume - i.Projectile.AftVol - i.Charge.Volume() + i.Projectile.Path*i.Barrel.BoreArea
 }
 
+//Reset returns all components to inintial state
 func (i *InternalBallisticsSimulator) Reset() {
 	i.Charge.Reset()
 	i.Projectile.Reset()
 	i.Barrel.Reset()
 }
 
+//LinkComponents generates variable with common simulation parameters and provide it to all simulation components
 func (i *InternalBallisticsSimulator) LinkComponents() {
 	i.Params = &SimParams{i.Projectile.Mass, i.Charge.Mass(), i.Barrel.BoreArea, i.Params.ForcingPressure}
 	i.Barrel.Sp = i.Params
