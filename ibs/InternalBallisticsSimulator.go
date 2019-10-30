@@ -18,7 +18,7 @@ type InternalBallisticsSimulator struct {
 	Params     *SimParams
 }
 
-//SimParams contains common parameters of simulation
+//SimParams contains shared simulation parameters
 type SimParams struct {
 	ProjMass        float64
 	ChargeMass      float64
@@ -52,7 +52,7 @@ func (i *InternalBallisticsSimulator) RunSym() []State {
 	return out[:n]
 }
 
-//Step makes one step through simulation time
+//Step makes one step over simulation time
 func (i *InternalBallisticsSimulator) Step(s *State) {
 	i.Barrel.Heat(s.Tmean, i.Charge.HeatFlux(s.Volume, s.Velocity), s.Path)
 	// trig := true
@@ -76,7 +76,7 @@ func (i *InternalBallisticsSimulator) State(s *State) {
 
 }
 
-//EnergyLoss calculates energy losses projectile translation, barrel heating, etc.
+//EnergyLoss calculates energy losses on: projectile translation, barrel heating, etc.
 func (i *InternalBallisticsSimulator) EnergyLoss() float64 {
 	var out float64
 	out += i.Projectile.KineticEnergy()
@@ -97,7 +97,7 @@ func (i *InternalBallisticsSimulator) Reset() {
 	i.Barrel.Reset()
 }
 
-//LinkComponents generates variable with common simulation parameters and provide it to all simulation components
+//LinkComponents generates SimParams variable and provide it to all simulation components
 func (i *InternalBallisticsSimulator) LinkComponents() {
 	i.Params = &SimParams{i.Projectile.Mass, i.Charge.Mass(), i.Barrel.BoreArea, i.Params.ForcingPressure}
 	i.Barrel.Sp = i.Params

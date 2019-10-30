@@ -47,7 +47,7 @@ func (p *Propellant) Reset() {
 	}
 }
 
-//Burn increments burned web depending on pressure and timestep
+//Burn integrates burned web over time
 func (p *Propellant) Burn(Pmean float64) {
 	p.Z += Pmean / p.Impulse * dt
 }

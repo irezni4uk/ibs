@@ -81,7 +81,7 @@ func (c *Charge) Thermodynamics(Vol, Enloss float64) (Tmean, Pmean float64) {
 	return Tmean, Pmean
 }
 
-//Burn calls Burn method of Charge components
+//Burn calls Burn method for Charge components
 func (c *Charge) Burn(Pmean float64) {
 	for i := range c.Propellant {
 		c.Propellant[i].Burn(Pmean)

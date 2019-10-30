@@ -33,7 +33,7 @@ func (b *Barrel) State(s *State) {
 	s.Pbase = b.PressureGradient(s.Pmean, b.Sp.ProjMass, b.Sp.ChargeMass)
 }
 
-func (b *Barrel) PressureGradient(Pmean, ProjMass, ChargeMass float64) float64 {
+func (b *Barrel) PressureGradient(Pmean, ProjMass, ChargeMass float64) (Pbase float64) {
 	return Pmean / (1 + ProjMass/3/ChargeMass)
 }
 
@@ -45,6 +45,7 @@ func (b *Barrel) Temperature_(path float64) float64 {
 	return b.Temperature + (b.Q+0*0)/(b.Cp*b.Density*b.Area(path)*b.Thickness)
 }
 
+//Heat integrates heat transfered to the barrel over time
 func (b *Barrel) Heat(Tgas, HeatFlux, path float64) {
 	// fmt.Println(HeatFlux)
 	h := b.FrictionFactor*HeatFlux + h0 //heat transfer coefficient
@@ -71,6 +72,7 @@ func NewBarrel() Barrel {
 	return out
 }
 
+//Caliber returns 'effective' caliber depending on groove and land diameters and groove to land ratio
 func Caliber(DG, DL, GLR float64) float64 {
 	return math.Sqrt((GLR*math.Pow(DG, 2) + math.Pow(DL, 2)) / (GLR + 1))
 }
@@ -79,6 +81,7 @@ func BoreArea(Caliber float64) float64 {
 	return math.Pi * math.Pow(Caliber, 2) / 4
 }
 
-func FrictionFactor(Caliber float64) float64 { //heat transfer friction factor
+//FrictionFactor Nordheim heat transfer friction factor
+func FrictionFactor(Caliber float64) float64 {
 	return math.Pow(13.2+4*math.Log10(100*Caliber), -2)
 }
