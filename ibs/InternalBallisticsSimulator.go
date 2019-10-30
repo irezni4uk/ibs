@@ -34,6 +34,7 @@ func (i *InternalBallisticsSimulator) RunSym() []State {
 		s := State{}
 		s.Time = t
 		i.State(&s)
+		// fmt.Printf("t: %.3f ms, zDot = %.4f\n", t*1e3, s.Pmean/i.Charge.Propellant[1].Impulse)
 		i.Step(&s)
 		// fmt.Printf("%+v\n", s)
 
@@ -48,10 +49,15 @@ func (i *InternalBallisticsSimulator) RunSym() []State {
 }
 
 func (i *InternalBallisticsSimulator) Step(s *State) {
-	// i.Barrel.Heat(s.Tmean, i.Charge.HeatFlux(s.Volume, s.Velocity), s.Path)
+	i.Barrel.Heat(s.Tmean, i.Charge.HeatFlux(s.Volume, s.Velocity), s.Path)
+	// trig := true
 	i.Charge.Burn(s.Pmean)
-	if s.Pbase > i.Params.ForcingPressure || i.Projectile.Path > 0 {
+	if s.Pmean > i.Params.ForcingPressure || i.Projectile.Path > 0 {
 		i.Projectile.Accelerate(s.Pbase * i.Params.BoreArea)
+		// if trig {
+		// 	fmt.Printf("FORCING t: %.0f mks\n", s.Time*1e6)
+		// 	trig = false
+		// }
 	}
 }
 
