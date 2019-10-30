@@ -2,6 +2,7 @@ package ibs
 
 import "fmt"
 
+//State contains state of simulation
 type State struct {
 	Time         float64
 	Pmean        float64

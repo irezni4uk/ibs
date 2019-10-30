@@ -4,6 +4,7 @@ package ibs
 
 // this is a comment
 
+//Charge contains slice of propellants and is designed to manage them
 type Charge struct {
 	Propellant []Propellant
 	// Projectile *Projectile
@@ -80,12 +81,14 @@ func (c *Charge) Thermodynamics(Vol, Enloss float64) (Tmean, Pmean float64) {
 	return Tmean, Pmean
 }
 
+//Burn calls Burn method of Charge components
 func (c *Charge) Burn(Pmean float64) {
 	for i := range c.Propellant {
 		c.Propellant[i].Burn(Pmean)
 	}
 }
 
+//NewCharge returns charge containing 2 components one of which is 7 g primer
 func NewCharge() Charge {
 
 	out := Charge{}

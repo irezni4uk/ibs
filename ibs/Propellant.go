@@ -47,10 +47,12 @@ func (p *Propellant) Reset() {
 	}
 }
 
+//Burn increments burned web depending on pressure and timestep
 func (p *Propellant) Burn(Pmean float64) {
 	p.Z += Pmean / p.Impulse * dt
 }
 
+//NewPropellant returns 1 kg of '16/1 тр В/А' propellant
 func NewPropellant() Propellant {
 	// fmt.Println(dt)
 
@@ -71,6 +73,7 @@ func NewPropellant() Propellant {
 	return out
 }
 
+//PsiFun returns function returning burned fraction of propellant depending on burned web fraction
 func PsiFun(zk, k1, l1, k2, l2 float64) func(z float64) (psi float64) {
 	return func(z float64) (psi float64) {
 		if z >= zk {
