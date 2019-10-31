@@ -6,6 +6,7 @@ import (
 	// "os"
 	"bytes"
 	"encoding/binary"
+	"encoding/json"
 	"io/ioutil"
 	"time"
 )
@@ -74,6 +75,8 @@ func main() {
 	dumpSol(&sol)
 	fmt.Println(sol[0])
 	fmt.Println(sol[len(sol)-1])
+	jsn, _ := json.Marshal(i)
+	fmt.Println(string(jsn))
 }
 
 func test(obj ibs.InternalBallisticsSimulator) {
