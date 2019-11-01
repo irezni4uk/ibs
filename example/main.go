@@ -6,7 +6,7 @@ import (
 	// "os"
 	"bytes"
 	"encoding/binary"
-	"encoding/json"
+	// "encoding/json"
 	"io/ioutil"
 	"time"
 )
@@ -38,13 +38,7 @@ func main() {
 	fmt.Println("Hello World")
 	t := ibs.Projectile{}
 	fmt.Println("%v", t)
-	t = ibs.Projectile{
-		Mass:     1,
-		AftVol:   0,
-		AftLen:   0,
-		Velocity: 0,
-		Path:     0,
-	}
+	t = ibs.Projectile{Mass: 1}
 	s := fmt.Sprintf("%#v", t)
 	fmt.Println(s)
 	b := ibs.NewBarrel()
@@ -66,17 +60,23 @@ func main() {
 		Params:     &ibs.SimParams{ForcingPressure: 100e6},
 	}
 	i.LinkComponents()
+	prop := ibs.Propellant{Mass: 1, Force: 1006000, Impulse: 500000, Density: 1600,
+		AdiabaticIndex: 1.224, Covolume: 1.01e-3, BurnTemperature: 2900, Psi: ibs.PsiFun(1.607, .769, .101, .506, -.823)}
+	fmt.Println(fmt.Sprintf("%v", prop))
+	fmt.Println(fmt.Sprintf("%v", c))
+	c.Propellant[1] = prop
+	fmt.Println(fmt.Sprintf("%v", c))
 	// test(i)
-	fmt.Println(i.RunSym())
-	fmt.Println(fmt.Sprintf("%#v", c))
-	fmt.Println(fmt.Sprintf("%#v", i))
+	// fmt.Println(i.RunSym())
+	// fmt.Println(fmt.Sprintf("%#v", c))
+	// fmt.Println(fmt.Sprintf("%#v", i))
 
 	sol := i.RunSym()
 	dumpSol(&sol)
 	fmt.Println(sol[0])
 	fmt.Println(sol[len(sol)-1])
-	jsn, _ := json.Marshal(i)
-	fmt.Println(string(jsn))
+	// jsn, _ := json.Marshal(i)
+	// fmt.Println(string(jsn))
 }
 
 func test(obj ibs.InternalBallisticsSimulator) {

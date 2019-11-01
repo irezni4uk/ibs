@@ -14,7 +14,7 @@ type Propellant struct {
 	Covolume        float64
 	Z               float64
 	IsPrimer        bool
-	psi             BurnFun
+	Psi             BurnFun
 }
 
 func (p *Propellant) Volume() float64 {
@@ -28,7 +28,7 @@ func (p *Propellant) Volume() float64 {
 
 func (p *Propellant) GasMass() float64 {
 	// return p.Mass * p.Z
-	return p.Mass * p.psi(p.Z)
+	return p.Mass * p.Psi(p.Z)
 }
 
 func (p *Propellant) FullForce() float64 {
@@ -68,7 +68,7 @@ func NewPropellant() Propellant {
 	out.Z = 0
 	out.IsPrimer = false
 	// out.IsPrimer = true
-	out.psi = PsiFun(1, 1, 0, 0, 0)
+	out.Psi = PsiFun(1, 1, 0, 0, 0)
 
 	return out
 }
