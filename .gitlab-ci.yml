@@ -20,4 +20,5 @@ test:
     script:
         - echo "Testing dev branch 24/11/19"
         - test -f "build/info.txt"
+        - cd /go/src/ibs
         - go test ./... -
