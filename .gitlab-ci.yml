@@ -10,7 +10,7 @@ build:
         - echo "Building"
         - mkdir build
         - touch build/info.txt
-        - cp . /go/src/ibs
+        - cp -r . /go/src/ibs
     artifacts:
         paths:
             - build/
