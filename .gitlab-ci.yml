@@ -10,6 +10,7 @@ build:
         - echo "Building"
         - mkdir build
         - touch build/info.txt
+        - pwd
         - cp -r . /go/src/ibs
     artifacts:
         paths:
@@ -18,6 +19,7 @@ build:
 test:
     stage: test
     script:
+        - pwd
         - echo "Testing dev branch 24/11/19"
         - test -f "build/info.txt"
         - cd /go/src/ibs
