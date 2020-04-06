@@ -1,3 +1,5 @@
+image: golang
+
 stages:
     - build
     - test
@@ -17,4 +19,4 @@ test:
     script:
         - echo "Testing dev branch 24/11/19"
         - test -f "build/info.txt"
-        - go test ./... -v
+        - go test ./... -
