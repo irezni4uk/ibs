@@ -10,9 +10,9 @@ build:
         - echo "Building"
         - mkdir build
         - touch build/info.txt
-        - pwd
-        - ls
-        - cp -r . /go/src/ibs
+        # - pwd
+        # - ls
+        # - cp -r . /go/src/ibs
     artifacts:
         paths:
             - build/
@@ -20,8 +20,9 @@ build:
 test:
     stage: test
     script:
-        - pwd
+        # - pwd
         - echo "Testing dev branch 24/11/19"
         - test -f "build/info.txt"
-        - cd /go/src/ibs
-        - go test ./... -
+        # - cd /go/src/ibs
+        # - go test ./... -
+        - go test ./ibs -

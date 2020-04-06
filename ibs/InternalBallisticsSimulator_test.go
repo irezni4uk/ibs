@@ -6,7 +6,7 @@ import (
 )
 
 func TestInternalBallisticsSimulator(t *testing.T) {
-	Vtarget := 1072
+	Vtarget := 1070
 
 	p := Projectile{Mass: 1}
 	b := NewBarrel()
