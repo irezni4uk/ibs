@@ -20,7 +20,7 @@ build:
 test:
     stage: test
     script:
-        # - pwd
+        - pwd
         - echo "Testing dev branch 24/11/19"
         - test -f "build/info.txt"
         # - cd /go/src/ibs
