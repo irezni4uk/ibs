@@ -1,28 +1,21 @@
 package ibs
 
-// import "fmt"
-
-// this is a comment
-
 //Charge contains slice of propellants and is designed to manage them
 type Charge struct {
 	Propellant []Propellant
-	// Projectile *Projectile
-	// Solution *Solution
 }
 
-func (c *Charge) State(s *State) {
-	s.Tmean, s.Pmean = c.Thermodynamics(s.Volume, s.EnergyLoss)
-	s.HeatCapacity = c.HeatCapacity()
-	s.GasMass = c.GasMass()
+func (c *Charge) state(s *State) {
+	s.Tmean, s.Pmean = c.thermodynamics(s.Volume, s.EnergyLoss)
+	s.HeatCapacity = c.heatCapacity()
+	s.GasMass = c.gasMass()
 }
 
-func (c *Charge) HeatFlux(Vol, Vproj float64) float64 {
-	// fmt.Println(c.HeatCapacity(), c.GasDens(Vol), c.Velocity(Vproj), Vproj)
-	return c.HeatCapacity() / Vol * c.Velocity(Vproj)
+func (c *Charge) heatFlux(Vol, Vproj float64) float64 {
+	return c.heatCapacity() / Vol * c.Velocity(Vproj)
 }
 
-func (c *Charge) HeatCapacity() (out float64) {
+func (c *Charge) heatCapacity() (out float64) {
 	for _, p := range c.Propellant {
 		out += p.HeatCapacity()
 	}
@@ -37,19 +30,19 @@ func (c *Charge) KineticEnergy(Vproj float64) float64 {
 	return c.Mass() * Vproj * Vproj / 6
 }
 
-func (c *Charge) Reset() {
+func (c *Charge) reset() {
 	for i := range c.Propellant {
-		c.Propellant[i].Reset()
+		c.Propellant[i].reset()
 	}
 }
 
-func (c *Charge) GasDens(Vol float64) float64 {
-	return c.GasMass() / Vol
+func (c *Charge) gasDens(Vol float64) float64 {
+	return c.gasMass() / Vol
 }
 
-func (c *Charge) GasMass() (out float64) {
+func (c *Charge) gasMass() (out float64) {
 	for _, p := range c.Propellant {
-		out += p.GasMass()
+		out += p.gasMass()
 	}
 	return out
 }
@@ -68,7 +61,7 @@ func (c *Charge) Volume() (out float64) {
 	return out
 }
 
-func (c *Charge) Thermodynamics(Vol, Enloss float64) (Tmean, Pmean float64) {
+func (c *Charge) thermodynamics(Vol, Enloss float64) (Tmean, Pmean float64) {
 	var s1, s2, s3 float64
 	for _, p := range c.Propellant {
 		f := p.FullForce()
@@ -82,9 +75,9 @@ func (c *Charge) Thermodynamics(Vol, Enloss float64) (Tmean, Pmean float64) {
 }
 
 //Burn calls Burn method for Charge components
-func (c *Charge) Burn(Pmean float64) {
+func (c *Charge) burn(Pmean float64) {
 	for i := range c.Propellant {
-		c.Propellant[i].Burn(Pmean)
+		c.Propellant[i].burn(Pmean)
 	}
 }
 
@@ -92,9 +85,7 @@ func (c *Charge) Burn(Pmean float64) {
 func NewCharge() Charge {
 
 	out := Charge{}
-	// out.Propellant = make([]Propellant, 4)
 	out.Propellant = append(out.Propellant, Propellant{7e-3, 1700, 260e3, .1e6, 2427, 1.22, .0006, 1, true, PsiFun(1, 1, 0, 0, 0)})
 	out.Propellant = append(out.Propellant, NewPropellant())
-	// fmt.Println(out.Propellant)
 	return out
 }

@@ -13,8 +13,6 @@ package ibs
 
 import "math"
 
-// import "fmt"
-
 type Barrel struct {
 	Caliber        float64
 	BoreArea       float64
@@ -26,11 +24,10 @@ type Barrel struct {
 	Density        float64 //= 7860    % kg/m3
 	Cp             float64 //= 460     % Heat capacity J/kg-K
 	Q              float64
-	Sp             *SimParams
 }
 
-func (b *Barrel) State(s *State) {
-	s.Pbase = b.PressureGradient(s.Pmean, b.Sp.ProjMass, b.Sp.ChargeMass)
+func (b *Barrel) state(s *State, ProjMass, ChargeMass float64) {
+	s.Pbase = b.PressureGradient(s.Pmean, ProjMass, ChargeMass)
 }
 
 func (b *Barrel) PressureGradient(Pmean, ProjMass, ChargeMass float64) (Pbase float64) {
@@ -46,13 +43,12 @@ func (b *Barrel) Temperature_(path float64) float64 {
 }
 
 //Heat integrates heat transfered to the barrel over time
-func (b *Barrel) Heat(Tgas, HeatFlux, path float64) {
-	// fmt.Println(HeatFlux)
+func (b *Barrel) heat(Tgas, HeatFlux, path float64) {
 	h := b.FrictionFactor*HeatFlux + h0 //heat transfer coefficient
 	b.Q += b.Area(path) * h * (Tgas - b.Temperature_(path)) * dt
 }
 
-func (b *Barrel) Reset() {
+func (b *Barrel) reset() {
 	b.Q = 0
 }
 

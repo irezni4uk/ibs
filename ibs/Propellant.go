@@ -1,7 +1,5 @@
 package ibs
 
-// import "fmt"
-
 type BurnFun func(float64) float64
 
 type Propellant struct {
@@ -18,28 +16,22 @@ type Propellant struct {
 }
 
 func (p *Propellant) Volume() float64 {
-	// return (1-p.Z)*p.Mass/p.Density + p.Z*p.Mass*p.Covolume
-	return p.Mass/p.Density + p.GasMass()*(p.Covolume-1/p.Density)
+	return p.Mass/p.Density + p.gasMass()*(p.Covolume-1/p.Density)
 }
 
-// func (p *Propellant) Pressure(Vol float64) float64 {
-// 	return p.Mass * p.Z * p.Force / Vol
-// }
-
-func (p *Propellant) GasMass() float64 {
-	// return p.Mass * p.Z
+func (p *Propellant) gasMass() float64 {
 	return p.Mass * p.Psi(p.Z)
 }
 
 func (p *Propellant) FullForce() float64 {
-	return p.Force * p.GasMass()
+	return p.Force * p.gasMass()
 }
 
 func (p *Propellant) HeatCapacity() float64 {
 	return p.FullForce() * p.AdiabaticIndex / (p.AdiabaticIndex - 1) / p.BurnTemperature
 }
 
-func (p *Propellant) Reset() {
+func (p *Propellant) reset() {
 	if p.IsPrimer {
 		p.Z = 1
 	} else {
@@ -48,13 +40,12 @@ func (p *Propellant) Reset() {
 }
 
 //Burn integrates burned web over time
-func (p *Propellant) Burn(Pmean float64) {
+func (p *Propellant) burn(Pmean float64) {
 	p.Z += Pmean / p.Impulse * dt
 }
 
 //NewPropellant returns 1 kg of '16/1 тр В/А' propellant
 func NewPropellant() Propellant {
-	// fmt.Println(dt)
 
 	out := Propellant{}
 
@@ -67,7 +58,6 @@ func NewPropellant() Propellant {
 	out.Covolume = 1.009e-3
 	out.Z = 0
 	out.IsPrimer = false
-	// out.IsPrimer = true
 	out.Psi = PsiFun(1, 1, 0, 0, 0)
 
 	return out

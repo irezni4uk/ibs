@@ -13,6 +13,43 @@ import (
 
 func main() {
 
+	// Create projectile
+	t := ibs.Projectile{Mass: 1, ForcingPressure: 100e6}
+
+	// Create barrel
+	b := ibs.NewBarrel()
+	// fmt.Println(fmt.Sprintf("%#v", b))
+
+	// Create Propellant
+	prop := ibs.Propellant{Mass: 1, Force: 1006000, Impulse: 500000, Density: 1600,
+		AdiabaticIndex: 1.224, Covolume: 1.01e-3, BurnTemperature: 2900, Psi: ibs.PsiFun(1.607, .769, .101, .506, -.823)}
+
+	// Create charge
+	c := ibs.NewCharge()
+
+	c.Propellant[1] = prop
+
+	// Create simulation object
+	i := ibs.InternalBallisticsSimulator{}
+
+	i = ibs.InternalBallisticsSimulator{
+		Barrel:     &b,
+		Projectile: &t,
+		Charge:     &c,
+	}
+
+	// Run simulation and save results
+	sol := i.RunSim()
+	dumpSol(&sol)
+
+	fmt.Println(sol[0])
+	fmt.Println(sol[len(sol)-1])
+
+	// test(i)
+
+	// jsn, _ := json.Marshal(i)
+	// fmt.Println(string(jsn))
+
 	// f, err := os.Create("/home/naveen/bytes")
 	// if err != nil {
 	// 	fmt.Println(err)
@@ -31,71 +68,21 @@ func main() {
 	// 	fmt.Println(err)
 	// 	return
 	// }
-	// f1 := ibs.PsiFun(1, 1, 0, 0, 0)
-	// fmt.Println(f1(100), f1(.5), f1(0), f1(.99), f1(-1))
-	// f1 = ibs.PsiFun(1.607, .769, .101, .506, -.823)
-	// fmt.Println(f1(100), f1(.5), f1(0), f1(.99), f1(-1), f1(1), f1(1.7), f1(1.607))
-	fmt.Println("Hello World")
-	t := ibs.Projectile{}
-	fmt.Println("%v", t)
-	t = ibs.Projectile{Mass: 1}
-	s := fmt.Sprintf("%#v", t)
-	fmt.Println(s)
-	b := ibs.NewBarrel()
-	s = fmt.Sprintf("%#v", b)
-	fmt.Println(s)
-	fmt.Println("Bore Caliber: ", b.Caliber)
-	fmt.Println("Bore Area: ", b.BoreArea)
-	p := ibs.NewPropellant()
-	s = fmt.Sprintf("%#v", p)
-	fmt.Println(s)
-	i := ibs.InternalBallisticsSimulator{}
-	fmt.Println(i)
-	c := ibs.NewCharge()
-	fmt.Println(c)
-	i = ibs.InternalBallisticsSimulator{
-		Barrel:     &b,
-		Projectile: &t,
-		Charge:     &c,
-		Params:     &ibs.SimParams{ForcingPressure: 100e6},
-	}
-	i.LinkComponents()
-	prop := ibs.Propellant{Mass: 1, Force: 1006000, Impulse: 500000, Density: 1600,
-		AdiabaticIndex: 1.224, Covolume: 1.01e-3, BurnTemperature: 2900, Psi: ibs.PsiFun(1.607, .769, .101, .506, -.823)}
-	fmt.Println(fmt.Sprintf("%v", prop))
-	fmt.Println(fmt.Sprintf("%v", c))
-	c.Propellant[1] = prop
-	fmt.Println(fmt.Sprintf("%v", c))
-	// test(i)
-	// fmt.Println(i.RunSym())
-	// fmt.Println(fmt.Sprintf("%#v", c))
-	// fmt.Println(fmt.Sprintf("%#v", i))
-
-	sol := i.RunSym()
-	dumpSol(&sol)
-	fmt.Println(sol[0])
-	fmt.Println(sol[len(sol)-1])
-	// jsn, _ := json.Marshal(i)
-	// fmt.Println(string(jsn))
 }
 
 func test(obj ibs.InternalBallisticsSimulator) {
-	n := 100
-	// n := 2
+	n := 1000
 	start := time.Now()
 	for i := 0; i < n; i++ {
-		obj.RunSym()
+		obj.RunSim()
 	}
 
 	elapsed := time.Since(start)
-	fmt.Println(fmt.Sprintf("RunSym took %s", elapsed))
-	// log.Printf("Binomial took %s", elapsed)
+	fmt.Println(fmt.Sprintf("RunSim took %s", elapsed))
 }
 
 func dumpSol(in *[]ibs.State) {
 	var bin_buf bytes.Buffer
-	// x := myStruct{"1", "Hello"}
-	// binary.Write(&bin_buf, binary.BigEndian, in)
 	binary.Write(&bin_buf, binary.LittleEndian, in)
 	err := ioutil.WriteFile("sol.bin", bin_buf.Bytes(), 0644)
 	check(err)
