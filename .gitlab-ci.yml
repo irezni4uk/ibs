@@ -25,4 +25,4 @@ test:
         - test -f "build/info.txt"
         # - cd /go/src/ibs
         # - go test ./... -
-        - go test ./ibs -
+        - go test ./ibs
