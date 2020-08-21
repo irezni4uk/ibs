@@ -49,7 +49,8 @@ func NewPropellant() Propellant {
 
 	out := Propellant{}
 
-	out.Mass = 1
+	// out.Mass = 1
+	out.Mass = 8
 	out.Density = 1600
 	out.Force = 1.015e6
 	out.Impulse = 1.04e6
@@ -63,8 +64,12 @@ func NewPropellant() Propellant {
 	return out
 }
 
-//PsiFun returns function returning burned fraction of propellant depending on burned web fraction
-func PsiFun(zk, k1, l1, k2, l2 float64) func(z float64) (psi float64) {
+//PsiFun returns function returning burned fraction of propellant depending on burned web fraction(nondimensional)
+func PsiFun(zk, k1, l1, k2, l2 float64, varIn ...float64) func(z float64) (psi float64) {
+	m1 := 0.
+	if len(varIn) > 0 {
+		m1 = varIn[0]
+	}
 	return func(z float64) (psi float64) {
 		if z >= zk {
 			return 1
@@ -73,7 +78,7 @@ func PsiFun(zk, k1, l1, k2, l2 float64) func(z float64) (psi float64) {
 		if z > 1 {
 			z = 1
 		}
-		psi = k1 * z * (1 + l1*z)
+		psi = k1 * z * (1 + l1*z + m1*z*z)
 		if z < 1 || zk == 1 {
 			return psi
 		}

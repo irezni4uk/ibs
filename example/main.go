@@ -13,25 +13,24 @@ import (
 
 func main() {
 
-	// Create projectile
-	t := ibs.Projectile{Mass: 1, ForcingPressure: 100e6}
+	t := ibs.Projectile{Mass: 9.796} //, ForcingPressure: 1e12}
 
-	// Create barrel
-	b := ibs.NewBarrel()
+	b := ibs.NewBarrel(.127, .127, 1)
 	// fmt.Println(fmt.Sprintf("%#v", b))
 
-	// Create Propellant
-	prop := ibs.Propellant{Mass: 1, Force: 1006000, Impulse: 500000, Density: 1600,
-		AdiabaticIndex: 1.224, Covolume: 1.01e-3, BurnTemperature: 2900, Psi: ibs.PsiFun(1.607, .769, .101, .506, -.823)}
+	// Dependence between burned web and burned fraction of propellant grain (nondimensional)
+	psi := ibs.PsiFun(1.441, .651, .364, .6, -1.135, -.031)
 
-	// Create charge
+	prop := ibs.Propellant{Mass: 8.7, Force: 1135990, Impulse: 1037219, Density: 1660.5,
+		AdiabaticIndex: 1.23, Covolume: .9755e-3, BurnTemperature: 3142, Psi: psi}
+
 	c := ibs.NewCharge()
 
 	c.Propellant[1] = prop
 
-	// Create simulation object
 	i := ibs.InternalBallisticsSimulator{}
 
+	// put all objects together
 	i = ibs.InternalBallisticsSimulator{
 		Barrel:     &b,
 		Projectile: &t,
@@ -42,32 +41,12 @@ func main() {
 	sol := i.RunSim()
 	dumpSol(&sol)
 
+	fmt.Println(sol[0].Pmean)
 	fmt.Println(sol[0])
+	fmt.Println(sol[len(sol)-700])
 	fmt.Println(sol[len(sol)-1])
 
-	// test(i)
-
-	// jsn, _ := json.Marshal(i)
-	// fmt.Println(string(jsn))
-
-	// f, err := os.Create("/home/naveen/bytes")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	// d2 := []byte{104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100}
-	// n2, err := f.Write(d2)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	f.Close()
-	// 	return
-	// }
-	// fmt.Println(n2, "bytes written successfully")
-	// err = f.Close()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
+	test(i)
 }
 
 func test(obj ibs.InternalBallisticsSimulator) {
@@ -78,7 +57,7 @@ func test(obj ibs.InternalBallisticsSimulator) {
 	}
 
 	elapsed := time.Since(start)
-	fmt.Println(fmt.Sprintf("RunSim took %s", elapsed))
+	fmt.Println(fmt.Sprintf("%d calls of RunSim took %s", n, elapsed))
 }
 
 func dumpSol(in *[]ibs.State) {

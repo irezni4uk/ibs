@@ -83,9 +83,11 @@ func (c *Charge) burn(Pmean float64) {
 
 //NewCharge returns charge containing 2 components one of which is 7 g primer
 func NewCharge() Charge {
+	primer := Propellant{.4712e-2, 1700, .845535E2 * 1e3, .1e6, 294, 1.4, .9755e-3, 1, true, PsiFun(1, 1, 0, 0, 0)}
 
 	out := Charge{}
-	out.Propellant = append(out.Propellant, Propellant{7e-3, 1700, 260e3, .1e6, 2427, 1.22, .0006, 1, true, PsiFun(1, 1, 0, 0, 0)})
+	out.Propellant = append(out.Propellant, primer)
+	// out.Propellant = append(out.Propellant, Propellant{7e-3, 1700, 260e3, .1e6, 2427, 1.22, .0006, 1, true, PsiFun(1, 1, 0, 0, 0)})
 	out.Propellant = append(out.Propellant, NewPropellant())
 	return out
 }

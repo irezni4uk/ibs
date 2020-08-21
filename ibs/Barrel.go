@@ -31,7 +31,7 @@ func (b *Barrel) state(s *State, ProjMass, ChargeMass float64) {
 }
 
 func (b *Barrel) PressureGradient(Pmean, ProjMass, ChargeMass float64) (Pbase float64) {
-	return Pmean / (1 + ProjMass/3/ChargeMass)
+	return Pmean / (1 + ChargeMass/3/ProjMass)
 }
 
 func (b *Barrel) Area(path float64) float64 {
@@ -52,32 +52,48 @@ func (b *Barrel) reset() {
 	b.Q = 0
 }
 
-func NewBarrel() Barrel {
+func NewBarrel(DG, DL, GLR float64) Barrel {
 	out := Barrel{}
 
-	out.Caliber = Caliber(58.8e-3, 57e-3, 0.683)
-	out.BoreArea = BoreArea(out.Caliber)
-	out.FrictionFactor = FrictionFactor(out.Caliber)
+	out.Caliber = caliber(DG, DL, GLR)
+	out.BoreArea = boreArea(out.Caliber)
+	out.FrictionFactor = frictionFactor(out.Caliber)
 	out.Thickness = .0045 * 25.4 * 1e-3 // IBHVG2 A USERS GUIDE
-	out.Temperature = 288
-	out.Length = 3.4025
-	out.Volume = 1600e-6
-	out.Density = 7860
-	out.Cp = 460
+	out.Temperature = 273
+	out.Length = 4.572
+	out.Volume = 9832.24e-6
+	out.Density = 7861.2
+	out.Cp = 460.28
 
 	return out
 }
 
+// func NewBarrel(DG, DL, GLR float64) Barrel {
+// 	out := Barrel{}
+
+// 	out.Caliber = caliber(DG, DL, GLR)
+// 	out.BoreArea = boreArea(out.Caliber)
+// 	out.FrictionFactor = frictionFactor(out.Caliber)
+// 	out.Thickness = .0045 * 25.4 * 1e-3 // IBHVG2 A USERS GUIDE
+// 	out.Temperature = 288
+// 	out.Length = 3.4025
+// 	out.Volume = 1600e-6
+// 	out.Density = 7860
+// 	out.Cp = 460
+
+// 	return out
+// }
+
 //Caliber returns 'effective' caliber depending on groove and land diameters and groove to land ratio
-func Caliber(DG, DL, GLR float64) float64 {
+func caliber(DG, DL, GLR float64) float64 {
 	return math.Sqrt((GLR*math.Pow(DG, 2) + math.Pow(DL, 2)) / (GLR + 1))
 }
 
-func BoreArea(Caliber float64) float64 {
+func boreArea(Caliber float64) float64 {
 	return math.Pi * math.Pow(Caliber, 2) / 4
 }
 
 //FrictionFactor Nordheim heat transfer friction factor
-func FrictionFactor(Caliber float64) float64 {
+func frictionFactor(Caliber float64) float64 {
 	return math.Pow(13.2+4*math.Log10(100*Caliber), -2)
 }
