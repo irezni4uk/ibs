@@ -68,22 +68,6 @@ func NewBarrel(DG, DL, GLR float64) Barrel {
 	return out
 }
 
-// func NewBarrel(DG, DL, GLR float64) Barrel {
-// 	out := Barrel{}
-
-// 	out.Caliber = caliber(DG, DL, GLR)
-// 	out.BoreArea = boreArea(out.Caliber)
-// 	out.FrictionFactor = frictionFactor(out.Caliber)
-// 	out.Thickness = .0045 * 25.4 * 1e-3 // IBHVG2 A USERS GUIDE
-// 	out.Temperature = 288
-// 	out.Length = 3.4025
-// 	out.Volume = 1600e-6
-// 	out.Density = 7860
-// 	out.Cp = 460
-
-// 	return out
-// }
-
 //Caliber returns 'effective' caliber depending on groove and land diameters and groove to land ratio
 func caliber(DG, DL, GLR float64) float64 {
 	return math.Sqrt((GLR*math.Pow(DG, 2) + math.Pow(DL, 2)) / (GLR + 1))

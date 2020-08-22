@@ -18,7 +18,7 @@ func main() {
 	b := ibs.NewBarrel(.127, .127, 1)
 	// fmt.Println(fmt.Sprintf("%#v", b))
 
-	// Dependence between burned web and burned fraction of propellant grain (nondimensional)
+	// Dependence between burned web (nondimensional) and burned fraction of propellant grain
 	psi := ibs.PsiFun(1.441, .651, .364, .6, -1.135, -.031)
 
 	prop := ibs.Propellant{Mass: 8.7, Force: 1135990, Impulse: 1037219, Density: 1660.5,

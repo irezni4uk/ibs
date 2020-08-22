@@ -15,7 +15,7 @@ type InternalBallisticsSimulator struct {
 	Charge     *Charge
 }
 
-//RunSym performs the simulation of interior ballistics problem
+//RunSim performs the simulation of interior ballistics problem and returns slice of problem states
 func (i *InternalBallisticsSimulator) RunSim() []State {
 
 	var out = make([]State, int(wallTime/dt))

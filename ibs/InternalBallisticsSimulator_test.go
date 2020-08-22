@@ -36,7 +36,7 @@ func TestInternalBallisticsSimulator(t *testing.T) {
 	c.Propellant[0].IsPrimer = true
 	c.Propellant[0].Mass = .1
 	p.ForcingPressure = 1e12
-	Ptarget := int(c.Mass()*c.Propellant[0].Force/(b.Volume-c.Mass()*c.Propellant[0].Covolume)/1e5 + 1)
+	Ptarget := int(c.Mass() * c.Propellant[0].Force / (b.Volume - c.Mass()*c.Propellant[0].Covolume) / 1e5)
 	s = i.RunSim()
 	Pressure := int(s[len(s)-1].Pmean / 1e5)
 	if Ptarget != Pressure {
