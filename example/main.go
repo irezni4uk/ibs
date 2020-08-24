@@ -15,14 +15,19 @@ func main() {
 
 	t := ibs.Projectile{Mass: 9.796} //, ForcingPressure: 1e12}
 
-	b := ibs.NewBarrel(.127, .127, 1)
-	// fmt.Println(fmt.Sprintf("%#v", b))
+	b := ibs.NewBarrel(0.127, 0.127, 1)
 
 	// Dependence between burned web (nondimensional) and burned fraction of propellant grain
-	psi := ibs.PsiFun(1.441, .651, .364, .6, -1.135, -.031)
+	psi := ibs.PsiFun(1.441, 0.651, 0.364, 0.6, -1.135, -0.031)
 
 	prop := ibs.Propellant{Mass: 8.7, Force: 1135990, Impulse: 1037219, Density: 1660.5,
-		AdiabaticIndex: 1.23, Covolume: .9755e-3, BurnTemperature: 3142, Psi: psi}
+		AdiabaticIndex: 1.23, Covolume: 0.9755e-3, BurnTemperature: 3142, Psi: psi}
+
+	// fmt.Println(fmt.Sprintf("%#v", prop))
+	// 7 perf Propellant grain.110519
+	// g := ibs.Grain{.508e-1, 1.07209, 3.175, 7}
+	// g.Convert(&prop, .110519)
+	// fmt.Println(fmt.Sprintf("%#v", prop))
 
 	c := ibs.NewCharge()
 
