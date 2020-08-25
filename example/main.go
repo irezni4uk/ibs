@@ -33,10 +33,8 @@ func main() {
 
 	c.Propellant[1] = prop
 
-	i := ibs.InternalBallisticsSimulator{}
-
 	// put all objects together
-	i = ibs.InternalBallisticsSimulator{
+	i := ibs.InternalBallisticsSimulator{
 		Barrel:     &b,
 		Projectile: &t,
 		Charge:     &c,
@@ -48,7 +46,6 @@ func main() {
 
 	fmt.Println(sol[0].Pmean)
 	fmt.Println(sol[0])
-	fmt.Println(sol[len(sol)-700])
 	fmt.Println(sol[len(sol)-1])
 
 	test(i)

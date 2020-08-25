@@ -9,6 +9,10 @@ type Grain struct {
 	NP float64 // NUMBER OF PERFS
 }
 
+// Convert converts Propellant object so it contains
+// burn function, that represents Grain geometry.
+// burnRate dimension should be consistent with Grain dimension.
+// burnRate dimension is L/s-MPa, where L is usually in cm
 func (g *Grain) Convert(p *Propellant, burnRate float64) {
 	web := (g.D - 3*g.P) / 4
 
